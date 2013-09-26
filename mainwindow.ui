@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>750</width>
+    <height>340</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>750</width>
+    <height>340</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>750</width>
+    <height>340</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Serial Port Explorer</string>
+  </property>
+  <property name="documentMode">
+   <bool>false</bool>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QGroupBox" name="comPortOptions">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>270</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>270</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>COM port options</string>
+        </property>
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>80</y>
+           <width>47</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Baud rate</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_2">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>125</y>
+           <width>43</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Data Bits</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="comPortParityBit">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>189</y>
+           <width>150</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QLabel" name="comPortLabel">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>35</y>
+           <width>51</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>COM Ports</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="comPortEnum">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>54</y>
+           <width>150</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="comPortSpeed">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>99</y>
+           <width>150</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_3">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>170</y>
+           <width>43</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Parity Bit</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="comPortDataBits">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>144</y>
+           <width>150</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_4">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>215</y>
+           <width>51</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Stop bits</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="comPortStopBits">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>234</y>
+           <width>150</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="comPortInformation">
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>270</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>250</width>
+          <height>270</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>Information</string>
+        </property>
+        <widget class="QLabel" name="comPortName">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>21</y>
+           <width>231</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Port name</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="comPortVendorId">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>97</y>
+           <width>231</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Vendor ID</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="comPortProductId">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>116</y>
+           <width>231</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Product ID</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="comPortSystemLocation">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>40</y>
+           <width>231</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>System location</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="comPortManufacturer">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>78</y>
+           <width>231</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Manufacturer</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="comPortIsBusy">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>135</y>
+           <width>231</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Is busy</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="comPortDescription">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>59</y>
+           <width>231</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Description</string>
+         </property>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="Data">
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>270</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>500</width>
+          <height>270</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>Data</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>750</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+   </widget>
+   <addaction name="menuAbout"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
