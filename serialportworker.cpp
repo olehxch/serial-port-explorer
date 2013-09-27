@@ -1,13 +1,10 @@
 #include "serialportworker.h"
 
-SerialPortWorker::SerialPortWorker()
-{
-}
+SerialPortWorker::SerialPortWorker() {}
 
-SerialPortWorker::SerialPortWorker(QSerialPortInfo _pinfo)
+SerialPortWorker::SerialPortWorker(QSerialPortInfo pinfo):stop(false)
 {
-    this->pinfo = new QSerialPortInfo(_pinfo);
-    port = new QSerialPort(*this->pinfo);
+    port = new QSerialPort(pinfo);
 }
 
 SerialPortWorker::~SerialPortWorker() {
@@ -16,13 +13,27 @@ SerialPortWorker::~SerialPortWorker() {
 
 void SerialPortWorker::updatePortInfo()
 {
+}
 
+/*
+ * Closes active port
+ */
+void SerialPortWorker::closePort()
+{
+    this->stop = true;
+}
+
+/*
+ * Opens specific port
+ */
+void SerialPortWorker::openPort(QSerialPortInfo info)
+{
 }
 
 void SerialPortWorker::doWork()
 {
-    port->open(QIODevice::ReadWrite);
-    port->setPortName(pinfo->portName());
+    emit started();
+    port->open(QIODevice::ReadOnly);
     port->setBaudRate(QSerialPort::Baud115200);
     port->setStopBits(QSerialPort::OneStop);
     port->setDataBits(QSerialPort::Data8);
@@ -32,7 +43,7 @@ void SerialPortWorker::doWork()
     char* c = new char[128];
     QString res = "";
     while(1) {
-        if(port->isOpen()) {
+        if(port->isOpen() && !stop) {
             if ((port->bytesAvailable() > 0) || port->waitForReadyRead(500)) {
                 if(res.indexOf( tr("\n") )>=0 ) {
                     if(res.count() != 0) {
@@ -44,14 +55,15 @@ void SerialPortWorker::doWork()
                     res += QString(c);
                 }
             }
+        } else {
+            if(port->isOpen())
+                port->close();
+            emit dataReceived( "--------------------------" );
+            emit stopped();
+            delete c;
+            return;
         }
     }
-}
-
-void SerialPortWorker::closePort()
-{
-    if(port->isOpen())
-        port->close();
 }
 
 void SerialPortWorker::updateAvailablePorts()

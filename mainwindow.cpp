@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include "serialportworker.h"
 
-
 /*
  * Initialize application, find available com ports and fill box info
  */
@@ -15,17 +14,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ports = new QList<QSerialPortInfo>();
     *ports = QSerialPortInfo::availablePorts();
 
+    // fill all available ports
     if(ports->isEmpty()) {
-        ui->comPortEnum->clear();
         ui->comPortEnum->addItem("None");
     } else {
         foreach(*currentPortInfo, *ports) {
             ui->comPortEnum->addItem(currentPortInfo->description());
         }
+        currentOpenedPort = new QSerialPort(*currentPortInfo);
     }
-
-    updatePort();
-    current = new QSerialPort(*currentPortInfo);
 
     // fill baud rate
     ui->comPortSpeed->addItem(QLatin1String("9600"), QSerialPort::Baud9600);
@@ -57,10 +54,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    if(current->isOpen())
-        current->close();
-
-    delete current;
+    delete currentPortInfo;
+    delete currentOpenedPort;
     delete ports;
     delete ui;
 }
@@ -70,8 +65,6 @@ MainWindow::~MainWindow()
  */
 void MainWindow::updatePort()
 {
-    //qRegisterMetaType< QList<QSerialPortInfo> >( "QList<QSerialPortInfo>" );
-
     QThread *wthread = new QThread;
     SerialPortWorker *pw = new SerialPortWorker();
     connect(this, &MainWindow::startWorker, pw, &SerialPortWorker::updateAvailablePorts);
@@ -82,36 +75,33 @@ void MainWindow::updatePort()
     emit startWorker();
 }
 
+/*
+ * Open chosen port
+ */
 void MainWindow::openCurrentPort(int index)
 {
     if(!ports->isEmpty()) {
         QSerialPortInfo info = ports->at(index);
 
         // update current active port
-        current = new QSerialPort(info);
-
-        /*if(current->isOpen()) {
-            statusBar()->showMessage(tr("Port opened: ") + current->portName());
-        } else {
-            statusBar()->showMessage(tr("Port open error: ") + current->portName());
-        }*/
-
-        QThread *wthread = new QThread;
-        SerialPortWorker *pw = new SerialPortWorker(info);
+        currentOpenedPort = new QSerialPort(info);
+        wthread = new QThread;
+        pw = new SerialPortWorker(info);
 
         connect(pw, &SerialPortWorker::dataReceived, this, &MainWindow::updateDataBox );
-        connect(this, &MainWindow::startWorker, pw, &SerialPortWorker::doWork);
-        connect(this, &MainWindow::closeCurrentPort, pw, &SerialPortWorker::closePort);
+        connect(wthread, &QThread::started, pw, &SerialPortWorker::doWork);
         connect(wthread, &QThread::finished, pw, &QObject::deleteLater);
+
+        // connect to gui
+        connect(pw, &SerialPortWorker::started, this, &MainWindow::workerStarted);
+        connect(pw, &SerialPortWorker::stopped, this, &MainWindow::workerStopped);
 
         pw->moveToThread(wthread);
         wthread->start();
-
-        emit startWorker();
-        statusBar()->showMessage(tr("Port opened: ") + current->portName());
     }
 }
 
+// TODO delete, unused
 void MainWindow::updateCurrentPortInfo()
 {
     if(!ports->isEmpty()) {
@@ -143,17 +133,26 @@ void MainWindow::updateCurrentPortInfo()
  */
 void MainWindow::on_comPortEnum_currentIndexChanged(int index)
 {
-    QSerialPortInfo info = ports->at(index);
+    if(!ports->isEmpty()) {
+        QSerialPortInfo info = ports->at(index);
 
-    // update info
-    ui->comPortName->setText( QString("Port: ") + info.portName() );
-    ui->comPortDescription->setText( QString("Description: ") + info.description() );
-    ui->comPortIsBusy->setText( QString("Busy: ") + (info.isBusy() ? QString("Yes") : QString("No")) );
-    ui->comPortProductId->setText( QString("Product Identifier: ") + (info.hasProductIdentifier() ? QString::number(info.productIdentifier(), 16) : QString()) );
-    ui->comPortVendorId->setText( QString("Vendor Identifier: ") + (info.hasVendorIdentifier() ? QString::number(info.vendorIdentifier(), 16) : QString()) );
-    ui->comPortSystemLocation->setText( QString("Location: ") + info.systemLocation() );
-    ui->comPortManufacturer->setText( QString("Manufacturer: ") + info.manufacturer() );
-
+        // update info
+        ui->comPortName->setText( QString("Port: ") + info.portName() );
+        ui->comPortDescription->setText( QString("Description: ") + info.description() );
+        ui->comPortIsBusy->setText( QString("Busy: ") + (info.isBusy() ? QString("Yes") : QString("No")) );
+        ui->comPortProductId->setText( QString("Product Identifier: ") + (info.hasProductIdentifier() ? QString::number(info.productIdentifier(), 16) : QString()) );
+        ui->comPortVendorId->setText( QString("Vendor Identifier: ") + (info.hasVendorIdentifier() ? QString::number(info.vendorIdentifier(), 16) : QString()) );
+        ui->comPortSystemLocation->setText( QString("Location: ") + info.systemLocation() );
+        ui->comPortManufacturer->setText( QString("Manufacturer: ") + info.manufacturer() );
+    } else {
+        ui->comPortName->setText( QString("Port: ") );
+        ui->comPortDescription->setText( QString("Description: ") );
+        ui->comPortIsBusy->setText( QString("Busy: ") );
+        ui->comPortProductId->setText( QString("Product Identifier: ") );
+        ui->comPortVendorId->setText( QString("Vendor Identifier: ") );
+        ui->comPortSystemLocation->setText( QString("Location: ") );
+        ui->comPortManufacturer->setText( QString("Manufacturer: ") );
+    }
 }
 
 /*
@@ -188,8 +187,26 @@ void MainWindow::on_openPortButton_clicked()
 
 void MainWindow::on_ClosePortButton_clicked()
 {
-    if(current->isOpen()) {
-        emit closeCurrentPort();
-        statusBar()->showMessage(tr("Port closed: ") + current->portName());
-    }
+    pw->closePort();
+    //wthread->exit(0);
+}
+
+/*
+ * Deactivate "Open port" button
+ */
+void MainWindow::workerStarted()
+{
+    ui->openPortButton->setEnabled(false);
+    ui->ClosePortButton->setEnabled(true);
+    statusBar()->showMessage(tr("Port opened: ") + currentOpenedPort->portName());
+}
+
+/*
+ * Enable "Open port" button
+ */
+void MainWindow::workerStopped()
+{
+    ui->openPortButton->setEnabled(true);
+    ui->ClosePortButton->setEnabled(false);
+    statusBar()->showMessage(tr("Port closed: ") + currentOpenedPort->portName());
 }

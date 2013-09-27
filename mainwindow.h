@@ -7,6 +7,7 @@
 #include <QList>
 #include <QDebug>
 #include <QTime>
+#include "serialportworker.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +24,7 @@ public:
     void updatePort();
     void openCurrentPort(int index);
     void updateCurrentPortInfo();
+
 signals:
     void startWorker();
     void portUpdated();
@@ -34,16 +36,20 @@ private slots:
     void availablePorts(QList<QSerialPortInfo> p);
 
     void on_openPortButton_clicked();
-
     void on_ClosePortButton_clicked();
+
+    void workerStarted();
+    void workerStopped();
 
 private:
     Ui::MainWindow *ui;
 
     // port vars
-    QSerialPort *current;
+    QSerialPort *currentOpenedPort;
     QSerialPortInfo *currentPortInfo;
     QList<QSerialPortInfo> *ports;
+    QThread *wthread;
+    SerialPortWorker *pw;
 };
 
 #endif // MAINWINDOW_H

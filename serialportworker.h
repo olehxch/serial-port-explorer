@@ -18,22 +18,27 @@ class SerialPortWorker : public QObject
     Q_OBJECT
 public:
     SerialPortWorker();
-    SerialPortWorker(QSerialPortInfo _pinfo);
+    SerialPortWorker(QSerialPortInfo pinfo);
     ~SerialPortWorker();
 
     void updatePortInfo();
+    void closePort();
+    void openPort(QSerialPortInfo info);
 signals:
     void dataReceived(QString data);
     void availablePorts(QList<QSerialPortInfo> p);
 
+    void started();
+    void stopped();
+
 public slots:
     void doWork();
-    void closePort();
     void updateAvailablePorts();
 
 private:
     QSerialPort *port;
-    QSerialPortInfo *pinfo;
+
+    bool stop;
 };
 
 #endif // SERIALPORTDATAMANAGER_H
