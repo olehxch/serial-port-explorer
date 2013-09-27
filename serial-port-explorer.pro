@@ -13,8 +13,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    serialportworker.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    serialportworker.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    res.qrc

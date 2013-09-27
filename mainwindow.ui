@@ -7,23 +7,27 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>340</height>
+    <height>370</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>800</width>
-    <height>340</height>
+    <height>370</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>800</width>
-    <height>340</height>
+    <height>370</height>
    </size>
   </property>
   <property name="windowTitle">
-   <string>Serial Port Explorer</string>
+   <string>Serial Port Explorer v0.1</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="res.qrc">
+    <normaloff>:/icons/ico/icon.ico</normaloff>:/icons/ico/icon.ico</iconset>
   </property>
   <property name="documentMode">
    <bool>false</bool>
@@ -32,18 +36,18 @@
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
+      <item alignment="Qt::AlignTop">
        <widget class="QGroupBox" name="comPortOptions">
         <property name="minimumSize">
          <size>
           <width>200</width>
-          <height>270</height>
+          <height>300</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>200</width>
-          <height>270</height>
+          <height>300</height>
          </size>
         </property>
         <property name="title">
@@ -208,18 +212,18 @@
         </widget>
        </widget>
       </item>
-      <item>
+      <item alignment="Qt::AlignTop">
        <widget class="QGroupBox" name="comPortInformation">
         <property name="minimumSize">
          <size>
           <width>250</width>
-          <height>270</height>
+          <height>300</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>250</width>
-          <height>270</height>
+          <height>300</height>
          </size>
         </property>
         <property name="title">
@@ -316,40 +320,58 @@
           <string>Description</string>
          </property>
         </widget>
-        <zorder>comPortName</zorder>
-        <zorder>comPortVendorId</zorder>
-        <zorder>comPortProductId</zorder>
-        <zorder>comPortSystemLocation</zorder>
-        <zorder>comPortManufacturer</zorder>
-        <zorder>comPortIsBusy</zorder>
-        <zorder>comPortDescription</zorder>
-        <zorder>Data</zorder>
+        <widget class="QWidget" name="">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>270</y>
+           <width>231</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QPushButton" name="openPortButton">
+            <property name="text">
+             <string>Open port</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="ClosePortButton">
+            <property name="text">
+             <string>Close port</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </item>
-      <item>
+      <item alignment="Qt::AlignTop">
        <widget class="QGroupBox" name="Data">
         <property name="minimumSize">
          <size>
           <width>250</width>
-          <height>270</height>
+          <height>300</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>500</width>
-          <height>270</height>
+          <height>300</height>
          </size>
         </property>
         <property name="title">
-         <string>Received data</string>
+         <string>Data</string>
         </property>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
            <x>11</x>
            <y>19</y>
-           <width>301</width>
-           <height>244</height>
+           <width>291</width>
+           <height>271</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
@@ -408,6 +430,8 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>
