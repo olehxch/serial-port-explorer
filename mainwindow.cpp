@@ -66,14 +66,25 @@ MainWindow::~MainWindow()
  */
 void MainWindow::on_comPortEnum_currentIndexChanged(int index)
 {
-    QSerialPortInfo info = ports->at(index);
+    if(!ports->isEmpty()) {
+        QSerialPortInfo info = ports->at(index);
 
-    // update info
-    ui->comPortName->setText( QString("Port: ") + info.portName() );
-    ui->comPortDescription->setText( QString("Description: ") + info.description() );
-    ui->comPortIsBusy->setText( QString("Busy: ") + (info.isBusy() ? QString("Yes") : QString("No")) );
-    ui->comPortProductId->setText( QString("Product Identifier: ") + (info.hasProductIdentifier() ? QString::number(info.productIdentifier(), 16) : QString()) );
-    ui->comPortVendorId->setText( QString("Vendor Identifier: ") + (info.hasVendorIdentifier() ? QString::number(info.vendorIdentifier(), 16) : QString()) );
-    ui->comPortSystemLocation->setText( QString("Location: ") + info.systemLocation() );
-    ui->comPortManufacturer->setText( QString("Manufacturer: ") + info.manufacturer() );
+        // update info
+        ui->comPortName->setText( QString("Port: ") + info.portName() );
+        ui->comPortDescription->setText( QString("Description: ") + info.description() );
+        ui->comPortIsBusy->setText( QString("Busy: ") + (info.isBusy() ? QString("Yes") : QString("No")) );
+        ui->comPortProductId->setText( QString("Product Identifier: ") + (info.hasProductIdentifier() ? QString::number(info.productIdentifier(), 16) : QString()) );
+        ui->comPortVendorId->setText( QString("Vendor Identifier: ") + (info.hasVendorIdentifier() ? QString::number(info.vendorIdentifier(), 16) : QString()) );
+        ui->comPortSystemLocation->setText( QString("Location: ") + info.systemLocation() );
+        ui->comPortManufacturer->setText( QString("Manufacturer: ") + info.manufacturer() );
+    } else {
+        // update info
+        ui->comPortName->setText( QString("Port: ") );
+        ui->comPortDescription->setText( QString("Description: ") );
+        ui->comPortIsBusy->setText( QString("Busy: ") );
+        ui->comPortProductId->setText( QString("Product Identifier: ") );
+        ui->comPortVendorId->setText( QString("Vendor Identifier: ") );
+        ui->comPortSystemLocation->setText( QString("Location: ") );
+        ui->comPortManufacturer->setText( QString("Manufacturer: ") );
+    }
 }

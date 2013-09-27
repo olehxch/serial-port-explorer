@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>750</width>
+    <width>800</width>
     <height>340</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>750</width>
+    <width>800</width>
     <height>340</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>750</width>
+    <width>800</width>
     <height>340</height>
    </size>
   </property>
@@ -316,6 +316,14 @@
           <string>Description</string>
          </property>
         </widget>
+        <zorder>comPortName</zorder>
+        <zorder>comPortVendorId</zorder>
+        <zorder>comPortProductId</zorder>
+        <zorder>comPortSystemLocation</zorder>
+        <zorder>comPortManufacturer</zorder>
+        <zorder>comPortIsBusy</zorder>
+        <zorder>comPortDescription</zorder>
+        <zorder>Data</zorder>
        </widget>
       </item>
       <item>
@@ -333,8 +341,48 @@
          </size>
         </property>
         <property name="title">
-         <string>Data</string>
+         <string>Received data</string>
         </property>
+        <widget class="QWidget" name="">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>19</y>
+           <width>301</width>
+           <height>244</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QTextEdit" name="receivedDataBox">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Send data</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLineEdit" name="dataLine"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="sendData">
+              <property name="text">
+               <string>Send</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </item>
      </layout>
@@ -346,7 +394,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>750</width>
+     <width>800</width>
      <height>21</height>
     </rect>
    </property>
