@@ -12,3 +12,6 @@ TODO:
 * Send/receive data
 * Create data graphs
 * Create menu
+
+## Screenshot v0.0.1
+![](http://i.imgur.com/Ww4lgmP.png "Version 0.0.1 running on Windows 8")
