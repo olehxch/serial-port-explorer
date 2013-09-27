@@ -15,4 +15,4 @@ TODO:
 * Create menu
 
 ## Screenshot v0.0.1
-![](http://i.imgur.com/Ww4lgmP.png "Version 0.0.1 running on Windows 8")
+![](http://i.imgur.com/zAit1C1.png "Version 0.0.1 running on Windows 8")
