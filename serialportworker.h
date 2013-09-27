@@ -17,27 +17,21 @@ class SerialPortWorker : public QObject
 {
     Q_OBJECT
 public:
-    SerialPortWorker();
     SerialPortWorker(QSerialPortInfo pinfo);
+    SerialPortWorker(QSerialPortInfo pinfo, QSerialPort::BaudRate br, QSerialPort::DataBits db, QSerialPort::StopBits sb, QSerialPort::Parity p, QSerialPort::FlowControl fc);
     ~SerialPortWorker();
-
-    void updatePortInfo();
     void closePort();
-    void openPort(QSerialPortInfo info);
+
 signals:
     void dataReceived(QString data);
-    void availablePorts(QList<QSerialPortInfo> p);
-
     void started();
     void stopped();
 
 public slots:
     void doWork();
-    void updateAvailablePorts();
 
 private:
     QSerialPort *port;
-
     bool stop;
 };
 

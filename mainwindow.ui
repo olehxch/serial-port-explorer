@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Serial Port Explorer v0.1</string>
+   <string>Serial Port Explorer v0.2</string>
   </property>
   <property name="windowIcon">
    <iconset resource="res.qrc">
@@ -136,7 +136,7 @@
           </size>
          </property>
         </widget>
-        <widget class="QComboBox" name="comPortSpeed">
+        <widget class="QComboBox" name="comPortBaudRate">
          <property name="geometry">
           <rect>
            <x>21</x>
@@ -320,7 +320,7 @@
           <string>Description</string>
          </property>
         </widget>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
            <x>10</x>

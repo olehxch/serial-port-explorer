@@ -11,24 +11,26 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     currentPortInfo = new QSerialPortInfo;
-    ports = new QList<QSerialPortInfo>();
-    *ports = QSerialPortInfo::availablePorts();
+    ports = new QList<QSerialPortInfo>(QSerialPortInfo::availablePorts());
 
     // fill all available ports
     if(ports->isEmpty()) {
         ui->comPortEnum->addItem("None");
+        ui->openPortButton->setEnabled(false);
+        ui->ClosePortButton->setEnabled(false);
     } else {
         foreach(*currentPortInfo, *ports) {
             ui->comPortEnum->addItem(currentPortInfo->description());
         }
-        currentOpenedPort = new QSerialPort(*currentPortInfo);
+        ui->openPortButton->setEnabled(true);
+        ui->ClosePortButton->setEnabled(false);
     }
 
     // fill baud rate
-    ui->comPortSpeed->addItem(QLatin1String("9600"), QSerialPort::Baud9600);
-    ui->comPortSpeed->addItem(QLatin1String("19200"), QSerialPort::Baud19200);
-    ui->comPortSpeed->addItem(QLatin1String("38400"), QSerialPort::Baud38400);
-    ui->comPortSpeed->addItem(QLatin1String("115200"), QSerialPort::Baud115200);
+    ui->comPortBaudRate->addItem(QLatin1String("9600"), QSerialPort::Baud9600);
+    ui->comPortBaudRate->addItem(QLatin1String("19200"), QSerialPort::Baud19200);
+    ui->comPortBaudRate->addItem(QLatin1String("38400"), QSerialPort::Baud38400);
+    ui->comPortBaudRate->addItem(QLatin1String("115200"), QSerialPort::Baud115200);
 
     // fill data bits
     ui->comPortDataBits->addItem(QLatin1String("5"), QSerialPort::Data5);
@@ -54,8 +56,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete wthread;
+    delete pw;
     delete currentPortInfo;
-    delete currentOpenedPort;
     delete ports;
     delete ui;
 }
@@ -65,40 +68,13 @@ MainWindow::~MainWindow()
  */
 void MainWindow::updatePort()
 {
-    QThread *wthread = new QThread;
+    /*QThread *wthread = new QThread;
     SerialPortWorker *pw = new SerialPortWorker();
     connect(this, &MainWindow::startWorker, pw, &SerialPortWorker::updateAvailablePorts);
-    connect(pw, &SerialPortWorker::availablePorts, this, &MainWindow::availablePorts);
     connect(wthread, &QThread::finished, pw, &QObject::deleteLater);
     pw->moveToThread(wthread);
     wthread->start();
-    emit startWorker();
-}
-
-/*
- * Open chosen port
- */
-void MainWindow::openCurrentPort(int index)
-{
-    if(!ports->isEmpty()) {
-        QSerialPortInfo info = ports->at(index);
-
-        // update current active port
-        currentOpenedPort = new QSerialPort(info);
-        wthread = new QThread;
-        pw = new SerialPortWorker(info);
-
-        connect(pw, &SerialPortWorker::dataReceived, this, &MainWindow::updateDataBox );
-        connect(wthread, &QThread::started, pw, &SerialPortWorker::doWork);
-        connect(wthread, &QThread::finished, pw, &QObject::deleteLater);
-
-        // connect to gui
-        connect(pw, &SerialPortWorker::started, this, &MainWindow::workerStarted);
-        connect(pw, &SerialPortWorker::stopped, this, &MainWindow::workerStopped);
-
-        pw->moveToThread(wthread);
-        wthread->start();
-    }
+    emit startWorker();*/
 }
 
 // TODO delete, unused
@@ -182,13 +158,41 @@ void MainWindow::availablePorts(QList<QSerialPortInfo> p)
 
 void MainWindow::on_openPortButton_clicked()
 {
-    openCurrentPort(ui->comPortEnum->currentIndex());
+    // open new port
+    if(!ports->isEmpty()) {
+        *currentPortInfo = ports->at(ui->comPortEnum->currentIndex());
+
+        // update current active port
+        wthread = new QThread;
+       /* QSerialPort::DataBits dataBits = QVariant::convert(QSerialPort::DataBits, ui->comPortDataBits->itemData(ui->comPortDataBits->currentIndex()) );
+        QSerialPort::Parity parityBit = ui->comPortParityBit->itemData(ui->comPortParityBit->currentIndex());
+        QSerialPort::BaudRate baudRate = ui->comPortBaudRate->itemData(ui->comPortBaudRate->currentIndex());
+        QSerialPort::StopBits stopBits = ui->comPortStopBits->itemData(ui->comPortStopBits->currentIndex());
+
+        QVariant dataBits = ui->comPortDataBits->itemData(ui->comPortDataBits->currentIndex(), QSerialPort::DataBits);
+        QVariant parityBit = ui->comPortParityBit->itemData(ui->comPortParityBit->currentIndex());
+        QVariant baudRate = ui->comPortBaudRate->itemData(ui->comPortBaudRate->currentIndex());
+        QVariant stopBits = ui->comPortStopBits->itemData(ui->comPortStopBits->currentIndex());
+        */
+        //pw = new SerialPortWorker(*currentPortInfo, baudRate.convert(), dataBits, stopBits, parityBit);
+        pw = new SerialPortWorker(*currentPortInfo);
+
+        connect(pw, &SerialPortWorker::dataReceived, this, &MainWindow::updateDataBox );
+        connect(wthread, &QThread::started, pw, &SerialPortWorker::doWork);
+        connect(wthread, &QThread::finished, pw, &QObject::deleteLater);
+
+        // connect to gui
+        connect(pw, &SerialPortWorker::started, this, &MainWindow::workerStarted);
+        connect(pw, &SerialPortWorker::stopped, this, &MainWindow::workerStopped);
+
+        pw->moveToThread(wthread);
+        wthread->start();
+    }
 }
 
 void MainWindow::on_ClosePortButton_clicked()
 {
     pw->closePort();
-    //wthread->exit(0);
 }
 
 /*
@@ -196,9 +200,15 @@ void MainWindow::on_ClosePortButton_clicked()
  */
 void MainWindow::workerStarted()
 {
+    // disable comboboxes with settings
+    ui->comPortDataBits->setEnabled(false);
+    ui->comPortParityBit->setEnabled(false);
+    ui->comPortStopBits->setEnabled(false);
+    ui->comPortBaudRate->setEnabled(false);
+
     ui->openPortButton->setEnabled(false);
     ui->ClosePortButton->setEnabled(true);
-    statusBar()->showMessage(tr("Port opened: ") + currentOpenedPort->portName());
+    statusBar()->showMessage(tr("Port opened: ") + currentPortInfo->portName());
 }
 
 /*
@@ -206,7 +216,13 @@ void MainWindow::workerStarted()
  */
 void MainWindow::workerStopped()
 {
+    // disable comboboxes with settings
+    ui->comPortDataBits->setEnabled(true);
+    ui->comPortParityBit->setEnabled(true);
+    ui->comPortStopBits->setEnabled(true);
+    ui->comPortBaudRate->setEnabled(true);
+
     ui->openPortButton->setEnabled(true);
     ui->ClosePortButton->setEnabled(false);
-    statusBar()->showMessage(tr("Port closed: ") + currentOpenedPort->portName());
+    statusBar()->showMessage(tr("Port closed: ") + currentPortInfo->portName());
 }

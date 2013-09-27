@@ -1,18 +1,28 @@
 #include "serialportworker.h"
 
-SerialPortWorker::SerialPortWorker() {}
-
+/*
+ * Standart constructor. All vsettings are default
+ */
 SerialPortWorker::SerialPortWorker(QSerialPortInfo pinfo):stop(false)
 {
     port = new QSerialPort(pinfo);
 }
 
-SerialPortWorker::~SerialPortWorker() {
-    delete port;
+/*
+ * Constructor with custom options for com port
+ */
+SerialPortWorker::SerialPortWorker(QSerialPortInfo pinfo, QSerialPort::BaudRate br, QSerialPort::DataBits db, QSerialPort::StopBits sb, QSerialPort::Parity p, QSerialPort::FlowControl fc = QSerialPort::NoFlowControl):stop(false)
+{
+    port = new QSerialPort(pinfo);
+    port->setBaudRate(br);
+    port->setStopBits(sb);
+    port->setDataBits(db);
+    port->setParity(p);
+    port->setFlowControl(fc);
 }
 
-void SerialPortWorker::updatePortInfo()
-{
+SerialPortWorker::~SerialPortWorker() {
+    delete port;
 }
 
 /*
@@ -24,21 +34,13 @@ void SerialPortWorker::closePort()
 }
 
 /*
- * Opens specific port
+ * This thread is only reading data from com port and sends signal when a line is read
  */
-void SerialPortWorker::openPort(QSerialPortInfo info)
-{
-}
-
 void SerialPortWorker::doWork()
 {
     emit started();
     port->open(QIODevice::ReadOnly);
-    port->setBaudRate(QSerialPort::Baud115200);
-    port->setStopBits(QSerialPort::OneStop);
-    port->setDataBits(QSerialPort::Data8);
-    port->setParity(QSerialPort::NoParity);
-    port->setFlowControl(QSerialPort::NoFlowControl);
+    /**/
 
     char* c = new char[128];
     QString res = "";
@@ -58,20 +60,10 @@ void SerialPortWorker::doWork()
         } else {
             if(port->isOpen())
                 port->close();
-            emit dataReceived( "--------------------------" );
+            emit dataReceived( "-----------------------------------" );
             emit stopped();
             delete c;
             return;
         }
-    }
-}
-
-void SerialPortWorker::updateAvailablePorts()
-{
-    while(1) {
-        QList<QSerialPortInfo> p = QSerialPortInfo::availablePorts();
-
-        QThread::sleep(500);
-        emit availablePorts(p);
     }
 }

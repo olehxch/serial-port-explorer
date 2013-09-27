@@ -22,7 +22,6 @@ public:
     ~MainWindow();
 
     void updatePort();
-    void openCurrentPort(int index);
     void updateCurrentPortInfo();
 
 signals:
@@ -43,9 +42,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-
-    // port vars
-    QSerialPort *currentOpenedPort;
     QSerialPortInfo *currentPortInfo;
     QList<QSerialPortInfo> *ports;
     QThread *wthread;
