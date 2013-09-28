@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    serialportworker.cpp
+    serialportworker.cpp \
+    updateserialportinfo.cpp
 
 HEADERS  += mainwindow.h \
-    serialportworker.h
+    serialportworker.h \
+    updateserialportinfo.h
 
 FORMS    += mainwindow.ui
 

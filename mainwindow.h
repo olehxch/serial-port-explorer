@@ -2,12 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtSerialPort/QSerialPortInfo>
-#include <QtSerialPort/QSerialPort>
 #include <QList>
 #include <QDebug>
 #include <QTime>
+#include <QComboBox>
+#include <QtSerialPort/QSerialPortInfo>
+#include <QtSerialPort/QSerialPort>
 #include "serialportworker.h"
+#include "updateserialportinfo.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,8 +22,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
-    void updatePort();
     void updateCurrentPortInfo();
 
 signals:
@@ -40,12 +40,18 @@ private slots:
     void workerStarted();
     void workerStopped();
 
+    void on_sendData_clicked();
+
 private:
     Ui::MainWindow *ui;
+    QComboBox *comports;
+
     QSerialPortInfo *currentPortInfo;
     QList<QSerialPortInfo> *ports;
     QThread *wthread;
+
     SerialPortWorker *pw;
+    UpdateSerialPortInfo *sinfo;
 };
 
 #endif // MAINWINDOW_H

@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Serial Port Explorer v0.2</string>
+   <string>Serial Port Explorer v0.3</string>
   </property>
   <property name="windowIcon">
    <iconset resource="res.qrc">
@@ -56,10 +56,10 @@
         <widget class="QLabel" name="label">
          <property name="geometry">
           <rect>
-           <x>21</x>
-           <y>80</y>
+           <x>20</x>
+           <y>60</y>
            <width>47</width>
-           <height>16</height>
+           <height>13</height>
           </rect>
          </property>
          <property name="text">
@@ -69,10 +69,10 @@
         <widget class="QLabel" name="label_2">
          <property name="geometry">
           <rect>
-           <x>21</x>
-           <y>125</y>
+           <x>20</x>
+           <y>105</y>
            <width>43</width>
-           <height>16</height>
+           <height>13</height>
           </rect>
          </property>
          <property name="text">
@@ -82,8 +82,8 @@
         <widget class="QComboBox" name="comPortParityBit">
          <property name="geometry">
           <rect>
-           <x>21</x>
-           <y>189</y>
+           <x>20</x>
+           <y>169</y>
            <width>150</width>
            <height>20</height>
           </rect>
@@ -98,10 +98,10 @@
         <widget class="QLabel" name="comPortLabel">
          <property name="geometry">
           <rect>
-           <x>21</x>
-           <y>35</y>
+           <x>20</x>
+           <y>15</y>
            <width>51</width>
-           <height>16</height>
+           <height>13</height>
           </rect>
          </property>
          <property name="maximumSize">
@@ -117,8 +117,8 @@
         <widget class="QComboBox" name="comPortEnum">
          <property name="geometry">
           <rect>
-           <x>21</x>
-           <y>54</y>
+           <x>20</x>
+           <y>34</y>
            <width>150</width>
            <height>20</height>
           </rect>
@@ -139,8 +139,8 @@
         <widget class="QComboBox" name="comPortBaudRate">
          <property name="geometry">
           <rect>
-           <x>21</x>
-           <y>99</y>
+           <x>20</x>
+           <y>79</y>
            <width>150</width>
            <height>20</height>
           </rect>
@@ -155,10 +155,10 @@
         <widget class="QLabel" name="label_3">
          <property name="geometry">
           <rect>
-           <x>21</x>
-           <y>170</y>
+           <x>20</x>
+           <y>150</y>
            <width>43</width>
-           <height>16</height>
+           <height>13</height>
           </rect>
          </property>
          <property name="text">
@@ -168,8 +168,8 @@
         <widget class="QComboBox" name="comPortDataBits">
          <property name="geometry">
           <rect>
-           <x>21</x>
-           <y>144</y>
+           <x>20</x>
+           <y>124</y>
            <width>150</width>
            <height>20</height>
           </rect>
@@ -184,10 +184,10 @@
         <widget class="QLabel" name="label_4">
          <property name="geometry">
           <rect>
-           <x>21</x>
-           <y>215</y>
-           <width>51</width>
-           <height>16</height>
+           <x>20</x>
+           <y>195</y>
+           <width>42</width>
+           <height>13</height>
           </rect>
          </property>
          <property name="text">
@@ -197,8 +197,8 @@
         <widget class="QComboBox" name="comPortStopBits">
          <property name="geometry">
           <rect>
-           <x>21</x>
-           <y>234</y>
+           <x>20</x>
+           <y>214</y>
            <width>150</width>
            <height>20</height>
           </rect>
@@ -208,6 +208,35 @@
            <width>150</width>
            <height>0</height>
           </size>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="comPortFlowControl">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>259</y>
+           <width>150</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_6">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>240</y>
+           <width>57</width>
+           <height>13</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>FlowControl</string>
          </property>
         </widget>
        </widget>

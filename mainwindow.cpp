@@ -18,12 +18,14 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->comPortEnum->addItem("None");
         ui->openPortButton->setEnabled(false);
         ui->ClosePortButton->setEnabled(false);
+        ui->sendData->setEnabled(false);
     } else {
         foreach(*currentPortInfo, *ports) {
             ui->comPortEnum->addItem(currentPortInfo->description());
         }
         ui->openPortButton->setEnabled(true);
         ui->ClosePortButton->setEnabled(false);
+        ui->sendData->setEnabled(false);
     }
 
     // fill baud rate
@@ -52,56 +54,42 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comPortStopBits->addItem(QLatin1String("1.5"), QSerialPort::OneAndHalfStop);
     #endif
     ui->comPortStopBits->addItem(QLatin1String("2"), QSerialPort::TwoStop);
+
+    // fill flow control
+    ui->comPortFlowControl->addItem(QLatin1String("NoFlowControl"), QSerialPort::NoFlowControl);
+    ui->comPortFlowControl->addItem(QLatin1String("RTS/CTS"), QSerialPort::HardwareControl);
+    ui->comPortFlowControl->addItem(QLatin1String("XON/XOFF"), QSerialPort::SoftwareControl);
+
+    // run thread that updates connected COM port devices in background worker thread
+    updateCurrentPortInfo();
 }
 
 MainWindow::~MainWindow()
 {
-    delete wthread;
-    delete pw;
+    pw->closePort();
+    sinfo->stop();
+    delete sinfo;
     delete currentPortInfo;
     delete ports;
     delete ui;
 }
 
 /*
- * Updates ports in a new thread
+ * Run thread, that every 500ms updates info about available com ports
+ * and sends dignal to update GUI
  */
-void MainWindow::updatePort()
-{
-    /*QThread *wthread = new QThread;
-    SerialPortWorker *pw = new SerialPortWorker();
-    connect(this, &MainWindow::startWorker, pw, &SerialPortWorker::updateAvailablePorts);
-    connect(wthread, &QThread::finished, pw, &QObject::deleteLater);
-    pw->moveToThread(wthread);
-    wthread->start();
-    emit startWorker();*/
-}
-
-// TODO delete, unused
 void MainWindow::updateCurrentPortInfo()
 {
-    if(!ports->isEmpty()) {
+    qRegisterMetaType< QList<QSerialPortInfo> >("QList<QSerialPortInfo>");
+    QThread *updatePortInfoThread = new QThread;
+    sinfo = new UpdateSerialPortInfo();
 
-        QSerialPortInfo info = ports->at(ui->comPortEnum->currentIndex());
+    connect(sinfo, &UpdateSerialPortInfo::updated, this, &MainWindow::availablePorts);
+    connect(updatePortInfoThread, &QThread::started, sinfo, &UpdateSerialPortInfo::doWork);
+    connect(updatePortInfoThread, &QThread::finished, sinfo, &QObject::deleteLater);
 
-        // update info
-        ui->comPortName->setText( QString("Port: ") + info.portName() );
-        ui->comPortDescription->setText( QString("Description: ") + info.description() );
-        ui->comPortIsBusy->setText( QString("Busy: ") + (info.isBusy() ? QString("Yes") : QString("No")) );
-        ui->comPortProductId->setText( QString("Product Identifier: ") + (info.hasProductIdentifier() ? QString::number(info.productIdentifier(), 16) : QString()) );
-        ui->comPortVendorId->setText( QString("Vendor Identifier: ") + (info.hasVendorIdentifier() ? QString::number(info.vendorIdentifier(), 16) : QString()) );
-        ui->comPortSystemLocation->setText( QString("Location: ") + info.systemLocation() );
-        ui->comPortManufacturer->setText( QString("Manufacturer: ") + info.manufacturer() );
-    } else {
-        ui->comPortName->setText( QString("Port: ") );
-        ui->comPortDescription->setText( QString("Description: ") );
-        ui->comPortIsBusy->setText( QString("Busy: ") );
-        ui->comPortProductId->setText( QString("Product Identifier: ") );
-        ui->comPortVendorId->setText( QString("Vendor Identifier: ") );
-        ui->comPortSystemLocation->setText( QString("Location: ") );
-        ui->comPortManufacturer->setText( QString("Manufacturer: ") );
-    }
-
+    sinfo->moveToThread(updatePortInfoThread);
+    updatePortInfoThread->start();
 }
 
 /*
@@ -143,13 +131,15 @@ void MainWindow::updateDataBox(QString data)
 }
 
 void MainWindow::availablePorts(QList<QSerialPortInfo> p)
-{
+{    
     *ports = p;
     if(ports->isEmpty()) {
         ui->comPortEnum->clear();
         ui->comPortEnum->addItem("None");
     } else {
+        ui->comPortEnum->blockSignals(true);
         ui->comPortEnum->clear();
+        ui->comPortEnum->blockSignals(false);
         foreach(*currentPortInfo, *ports) {
             ui->comPortEnum->addItem(currentPortInfo->description());
         }
@@ -164,18 +154,13 @@ void MainWindow::on_openPortButton_clicked()
 
         // update current active port
         wthread = new QThread;
-       /* QSerialPort::DataBits dataBits = QVariant::convert(QSerialPort::DataBits, ui->comPortDataBits->itemData(ui->comPortDataBits->currentIndex()) );
-        QSerialPort::Parity parityBit = ui->comPortParityBit->itemData(ui->comPortParityBit->currentIndex());
-        QSerialPort::BaudRate baudRate = ui->comPortBaudRate->itemData(ui->comPortBaudRate->currentIndex());
-        QSerialPort::StopBits stopBits = ui->comPortStopBits->itemData(ui->comPortStopBits->currentIndex());
 
-        QVariant dataBits = ui->comPortDataBits->itemData(ui->comPortDataBits->currentIndex(), QSerialPort::DataBits);
-        QVariant parityBit = ui->comPortParityBit->itemData(ui->comPortParityBit->currentIndex());
-        QVariant baudRate = ui->comPortBaudRate->itemData(ui->comPortBaudRate->currentIndex());
-        QVariant stopBits = ui->comPortStopBits->itemData(ui->comPortStopBits->currentIndex());
-        */
-        //pw = new SerialPortWorker(*currentPortInfo, baudRate.convert(), dataBits, stopBits, parityBit);
-        pw = new SerialPortWorker(*currentPortInfo);
+        int dataBits = ui->comPortDataBits->itemData(ui->comPortDataBits->currentIndex()).toInt();
+        int parityBit = ui->comPortParityBit->itemData(ui->comPortParityBit->currentIndex()).toInt();
+        int baudRate = ui->comPortBaudRate->itemData(ui->comPortBaudRate->currentIndex()).toInt();
+        int stopBits = ui->comPortStopBits->itemData(ui->comPortStopBits->currentIndex()).toInt();
+        int flowControl = ui->comPortFlowControl->itemData(ui->comPortFlowControl->currentIndex()).toInt();
+        pw = new SerialPortWorker(*currentPortInfo, baudRate, dataBits, stopBits, parityBit, flowControl);
 
         connect(pw, &SerialPortWorker::dataReceived, this, &MainWindow::updateDataBox );
         connect(wthread, &QThread::started, pw, &SerialPortWorker::doWork);
@@ -205,7 +190,9 @@ void MainWindow::workerStarted()
     ui->comPortParityBit->setEnabled(false);
     ui->comPortStopBits->setEnabled(false);
     ui->comPortBaudRate->setEnabled(false);
+    ui->comPortFlowControl->setEnabled(false);
 
+    ui->sendData->setEnabled(true);
     ui->openPortButton->setEnabled(false);
     ui->ClosePortButton->setEnabled(true);
     statusBar()->showMessage(tr("Port opened: ") + currentPortInfo->portName());
@@ -221,8 +208,19 @@ void MainWindow::workerStopped()
     ui->comPortParityBit->setEnabled(true);
     ui->comPortStopBits->setEnabled(true);
     ui->comPortBaudRate->setEnabled(true);
+    ui->comPortFlowControl->setEnabled(true);
 
+    ui->sendData->setEnabled(false);
     ui->openPortButton->setEnabled(true);
     ui->ClosePortButton->setEnabled(false);
     statusBar()->showMessage(tr("Port closed: ") + currentPortInfo->portName());
 }
+
+/*
+ * Send data
+ */
+void MainWindow::on_sendData_clicked()
+{
+    pw->sendData(ui->dataLine->text());
+}
+
