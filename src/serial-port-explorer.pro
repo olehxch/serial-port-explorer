@@ -15,13 +15,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     serialportworker.cpp \
-    updateserialportinfo.cpp
+    updateserialportinfo.cpp \
+    aboutdialog.cpp
 
 HEADERS  += mainwindow.h \
     serialportworker.h \
-    updateserialportinfo.h
+    updateserialportinfo.h \
+    aboutdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    aboutdialog.ui
 
 RESOURCES += \
     res.qrc

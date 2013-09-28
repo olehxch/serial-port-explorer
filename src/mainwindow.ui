@@ -23,11 +23,11 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Serial Port Explorer v0.3</string>
+   <string>Serial Port Explorer v0.3.1</string>
   </property>
   <property name="windowIcon">
    <iconset resource="res.qrc">
-    <normaloff>:/icons/ico/icon.ico</normaloff>:/icons/ico/icon.ico</iconset>
+    <normaloff>:/icons/Main Icon</normaloff>:/icons/Main Icon</iconset>
   </property>
   <property name="documentMode">
    <bool>false</bool>
@@ -453,10 +453,16 @@
     <property name="title">
      <string>About</string>
     </property>
+    <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

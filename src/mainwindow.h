@@ -10,6 +10,7 @@
 #include <QtSerialPort/QSerialPort>
 #include "serialportworker.h"
 #include "updateserialportinfo.h"
+#include "aboutdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -41,6 +42,8 @@ private slots:
     void workerStopped();
 
     void on_sendData_clicked();
+
+    void on_actionAbout_triggered();
 
 private:
     Ui::MainWindow *ui;

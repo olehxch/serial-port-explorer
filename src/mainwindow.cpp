@@ -224,3 +224,10 @@ void MainWindow::on_sendData_clicked()
     pw->sendData(ui->dataLine->text());
 }
 
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QDialog *aboutWindow = new AboutDialog;
+    aboutWindow->setModal(true);
+    aboutWindow->show();
+}
