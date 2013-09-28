@@ -9,7 +9,7 @@ It uses Qt5.1.1 libraries and compiled with minGW 4.8.
 
 Please download all libraries with exe.
 
-[Download latest version here](https://github.com/amorphix/serial-port-explorer/tree/master/release)
+[Download latest version here](https://github.com/amorphix/serial-port-explorer/releases/tag/v0.3)
 
 ##Features:
 
