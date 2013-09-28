@@ -20,7 +20,7 @@ Please download all libraries with exe.
 ##TODO:
 * Create data graphs
 * Create menu
-* Add custom settings
+* Add logging option to store all data sent/received via COM port
 * Add about window
 
 ## Screenshot v0.3 (last version - 28.09.2013)
