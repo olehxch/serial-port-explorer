@@ -8,6 +8,7 @@
 #include <QComboBox>
 #include <QtSerialPort/QSerialPortInfo>
 #include <QtSerialPort/QSerialPort>
+#include <QFileDialog>
 #include "serialportworker.h"
 #include "updateserialportinfo.h"
 #include "aboutdialog.h"
@@ -24,6 +25,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void updateCurrentPortInfo();
+    void updateDataStatistics();
 
 signals:
     void startWorker();
@@ -31,10 +33,11 @@ signals:
     void closeCurrentPort();
 
 private slots:
-    void on_comPortEnum_currentIndexChanged(int index);
     void updateDataBox(QString data);
     void availablePorts(QList<QSerialPortInfo> p);
 
+    void on_comPortEnum_currentIndexChanged(int index);
+    void updateStatusBar(QString s);
     void on_openPortButton_clicked();
     void on_ClosePortButton_clicked();
 
@@ -42,9 +45,12 @@ private slots:
     void workerStopped();
 
     void on_sendData_clicked();
-
     void on_actionAbout_triggered();
+    void on_saveDataToFileButton_clicked();
 
+    void incPacketsSent();
+    void incPacketReceived();
+    void clearPacketStatistics();
 private:
     Ui::MainWindow *ui;
     QComboBox *comports;
@@ -55,6 +61,9 @@ private:
 
     SerialPortWorker *pw;
     UpdateSerialPortInfo *sinfo;
+
+    unsigned int packetsSent;
+    unsigned int packetsReceived;
 };
 
 #endif // MAINWINDOW_H

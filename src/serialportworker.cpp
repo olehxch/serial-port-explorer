@@ -41,8 +41,7 @@ SerialPortWorker::~SerialPortWorker() {
  */
 void SerialPortWorker::closePort()
 {
-    if(this != NULL)
-        this->stop = true;
+    this->stop = true;
 }
 
 /*
@@ -72,6 +71,7 @@ void SerialPortWorker::doWork()
                 if(res.indexOf( tr("\n") )>=0 ) {
                     if(res.count() != 0) {
                         emit dataReceived( res );
+                        emit incPacketsReceived();
                         res = "";
                     }
                 } else {
@@ -100,6 +100,7 @@ void SerialPortWorker::sendData()
 {
     if( port->write(data.toLatin1()) > -1) {
         emit dataReceived(data);
+        emit incPacketsSent();
     }else {
         emit dataReceived("Error with sending data");
     }

@@ -29,6 +29,8 @@ signals:
     void started();
     void stopped();
 
+    void incPacketsReceived();
+    void incPacketsSent();
 public slots:
     void doWork();
 

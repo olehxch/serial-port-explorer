@@ -7,7 +7,7 @@
  */
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow), packetsSent(0), packetsReceived(0)
 {
     ui->setupUi(this);
     currentPortInfo = new QSerialPortInfo;
@@ -66,9 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    pw->closePort();
     sinfo->stop();
-    delete sinfo;
     delete currentPortInfo;
     delete ports;
     delete ui;
@@ -90,6 +88,33 @@ void MainWindow::updateCurrentPortInfo()
 
     sinfo->moveToThread(updatePortInfoThread);
     updatePortInfoThread->start();
+}
+
+/*
+ * Update label 'Read/write statistics'
+ */
+void MainWindow::updateDataStatistics()
+{
+    ui->readWriteStat->setText("Read/Write: " + QString::number(packetsReceived) + "/" + QString::number(packetsSent) + " packets");
+}
+
+void MainWindow::incPacketsSent()
+{
+    ++packetsSent;
+    updateDataStatistics();
+}
+
+void MainWindow::incPacketReceived()
+{
+    ++packetsReceived;
+    updateDataStatistics();
+}
+
+void MainWindow::clearPacketStatistics()
+{
+    packetsReceived = 0;
+    packetsSent = 0;
+    updateDataStatistics();
 }
 
 /*
@@ -120,6 +145,14 @@ void MainWindow::on_comPortEnum_currentIndexChanged(int index)
 }
 
 /*
+ * Updates status bar with string
+ */
+void MainWindow::updateStatusBar(QString s)
+{
+    statusBar()->showMessage(s);
+}
+
+/*
  * Updates data box and shows new received data from com port
  */
 void MainWindow::updateDataBox(QString data)
@@ -130,6 +163,9 @@ void MainWindow::updateDataBox(QString data)
     }
 }
 
+/*
+ * Update all available connected devices to ports
+ */
 void MainWindow::availablePorts(QList<QSerialPortInfo> p)
 {    
     *ports = p;
@@ -146,8 +182,12 @@ void MainWindow::availablePorts(QList<QSerialPortInfo> p)
     }
 }
 
+/*
+ * Open specific port to read/write data
+ */
 void MainWindow::on_openPortButton_clicked()
 {
+    clearPacketStatistics();
     // open new port
     if(!ports->isEmpty()) {
         *currentPortInfo = ports->at(ui->comPortEnum->currentIndex());
@@ -162,6 +202,8 @@ void MainWindow::on_openPortButton_clicked()
         int flowControl = ui->comPortFlowControl->itemData(ui->comPortFlowControl->currentIndex()).toInt();
         pw = new SerialPortWorker(*currentPortInfo, baudRate, dataBits, stopBits, parityBit, flowControl);
 
+        connect(pw, &SerialPortWorker::incPacketsReceived, this, &MainWindow::incPacketReceived);
+        connect(pw, &SerialPortWorker::incPacketsSent, this, &MainWindow::incPacketsSent);
         connect(pw, &SerialPortWorker::dataReceived, this, &MainWindow::updateDataBox );
         connect(wthread, &QThread::started, pw, &SerialPortWorker::doWork);
         connect(wthread, &QThread::finished, pw, &QObject::deleteLater);
@@ -195,7 +237,7 @@ void MainWindow::workerStarted()
     ui->sendData->setEnabled(true);
     ui->openPortButton->setEnabled(false);
     ui->ClosePortButton->setEnabled(true);
-    statusBar()->showMessage(tr("Port opened: ") + currentPortInfo->portName());
+    updateStatusBar(tr("Port opened: ") + currentPortInfo->portName());
 }
 
 /*
@@ -213,7 +255,7 @@ void MainWindow::workerStopped()
     ui->sendData->setEnabled(false);
     ui->openPortButton->setEnabled(true);
     ui->ClosePortButton->setEnabled(false);
-    statusBar()->showMessage(tr("Port closed: ") + currentPortInfo->portName());
+    updateStatusBar(tr("Port closed: ") + currentPortInfo->portName());
 }
 
 /*
@@ -224,10 +266,40 @@ void MainWindow::on_sendData_clicked()
     pw->sendData(ui->dataLine->text());
 }
 
-
+/*
+ * Show about window
+ */
 void MainWindow::on_actionAbout_triggered()
 {
     QDialog *aboutWindow = new AboutDialog;
     aboutWindow->setModal(true);
     aboutWindow->show();
+}
+
+/*
+ * Save sent/received data to log file
+ */
+void MainWindow::on_saveDataToFileButton_clicked()
+{
+    QString plainText = ui->receivedDataBox->toPlainText();
+    if(plainText.compare("") == 0) {
+        updateStatusBar("Data box is empty.");
+        return;
+    }
+
+    QThread *saveLog = new QThread;
+    QString saveFileName = QFileDialog::getSaveFileName(this, tr("Save to file"), "/", tr("Text File (*.txt)"));
+
+    // save data to file
+    connect(saveLog, &QThread::started, [=] {
+        QFile file(saveFileName);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+            return;
+
+        QTextStream out(&file);
+        out << plainText;
+        file.close();
+    });
+
+    saveLog->start();
 }

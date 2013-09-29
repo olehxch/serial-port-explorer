@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Serial Port Explorer v0.3.1</string>
+   <string>Serial Port Explorer v0.3.2</string>
   </property>
   <property name="windowIcon">
    <iconset resource="res.qrc">
@@ -262,8 +262,8 @@
          <property name="geometry">
           <rect>
            <x>11</x>
-           <y>21</y>
-           <width>231</width>
+           <y>22</y>
+           <width>221</width>
            <height>16</height>
           </rect>
          </property>
@@ -275,8 +275,8 @@
          <property name="geometry">
           <rect>
            <x>11</x>
-           <y>97</y>
-           <width>231</width>
+           <y>98</y>
+           <width>221</width>
            <height>16</height>
           </rect>
          </property>
@@ -288,8 +288,8 @@
          <property name="geometry">
           <rect>
            <x>11</x>
-           <y>116</y>
-           <width>231</width>
+           <y>117</y>
+           <width>221</width>
            <height>16</height>
           </rect>
          </property>
@@ -301,8 +301,8 @@
          <property name="geometry">
           <rect>
            <x>11</x>
-           <y>40</y>
-           <width>231</width>
+           <y>41</y>
+           <width>221</width>
            <height>16</height>
           </rect>
          </property>
@@ -314,8 +314,8 @@
          <property name="geometry">
           <rect>
            <x>11</x>
-           <y>78</y>
-           <width>231</width>
+           <y>79</y>
+           <width>221</width>
            <height>16</height>
           </rect>
          </property>
@@ -327,8 +327,8 @@
          <property name="geometry">
           <rect>
            <x>11</x>
-           <y>135</y>
-           <width>231</width>
+           <y>136</y>
+           <width>221</width>
            <height>16</height>
           </rect>
          </property>
@@ -340,8 +340,8 @@
          <property name="geometry">
           <rect>
            <x>11</x>
-           <y>59</y>
-           <width>231</width>
+           <y>60</y>
+           <width>221</width>
            <height>16</height>
           </rect>
          </property>
@@ -375,6 +375,32 @@
           </item>
          </layout>
         </widget>
+        <widget class="QLabel" name="readWriteStat">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>220</y>
+           <width>221</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Read/Write: 0/0 packets</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="saveDataToFileButton">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>240</y>
+           <width>231</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Save send/received data history</string>
+         </property>
+        </widget>
        </widget>
       </item>
       <item alignment="Qt::AlignTop">
@@ -394,43 +420,63 @@
         <property name="title">
          <string>Data</string>
         </property>
-        <widget class="QWidget" name="layoutWidget">
+        <widget class="QTextEdit" name="receivedDataBox">
          <property name="geometry">
           <rect>
            <x>11</x>
-           <y>19</y>
+           <y>20</y>
            <width>291</width>
-           <height>271</height>
+           <height>221</height>
           </rect>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_5">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>250</y>
+           <width>49</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>1677</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Send data</string>
+         </property>
+        </widget>
+        <widget class="QWidget" name="">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>270</y>
+           <width>291</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <widget class="QTextEdit" name="receivedDataBox">
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
+           <widget class="QLineEdit" name="dataLine"/>
           </item>
           <item>
-           <widget class="QLabel" name="label_5">
+           <widget class="QPushButton" name="sendData">
             <property name="text">
-             <string>Send data</string>
+             <string>Send</string>
             </property>
            </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <widget class="QLineEdit" name="dataLine"/>
-            </item>
-            <item>
-             <widget class="QPushButton" name="sendData">
-              <property name="text">
-               <string>Send</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </item>
          </layout>
         </widget>
