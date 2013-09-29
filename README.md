@@ -5,7 +5,7 @@ This program is for working with Serial ports. You can see what ports are availa
 It is not completed yet.
 It uses Qt5.1.1 libraries and compiled with minGW 4.8.
 
-##Last release of SPEv0.3.2
+##Last release
 
 Qt5 libraries are needed to be in folder with program.
 
@@ -23,6 +23,6 @@ Qt5 libraries are needed to be in folder with program.
 * Create data graphs
 * Create menu
 
-## Screenshot v0.3.2 (last version - 29.09.2013)
+## Screenshot (last version - 29.09.2013)
 ![](http://i.imgur.com/azpFTdO.png "Version 0.3.2 running on Windows 8")
 
